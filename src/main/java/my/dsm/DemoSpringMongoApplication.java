@@ -41,7 +41,7 @@ public class DemoSpringMongoApplication implements CommandLineRunner {
         orderRepo.deleteAll();
         Order order = new Order();
         order.setDescription("test order");
-        order.setOwner(firstCustomer);
+        order.setCustomer(firstCustomer);
         orderRepo.save(order);
 
         // fetch all customers
