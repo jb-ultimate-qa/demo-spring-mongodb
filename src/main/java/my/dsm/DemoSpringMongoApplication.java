@@ -1,7 +1,10 @@
 package my.dsm;
 
+import my.dsm.nested_doc.Building;
+import my.dsm.nested_doc.Location;
 import my.dsm.model.CustomerRepository;
 import my.dsm.model.Customer;
+import my.dsm.repo.BuildingRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,8 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class DemoSpringMongoApplication implements CommandLineRunner {
 
-    @Autowired
-    private CustomerRepository repository;
+    @Autowired private CustomerRepository repository;
+    @Autowired private BuildingRepo buildingRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(DemoSpringMongoApplication.class, args);
@@ -19,7 +22,11 @@ public class DemoSpringMongoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        buildingActions();
+        //customersActions();
+    }
 
+    private void customersActions() {
         repository.deleteAll();
 
         // save a couple of customers
@@ -44,6 +51,20 @@ public class DemoSpringMongoApplication implements CommandLineRunner {
         for (Customer customer : repository.findByLastName("Smith")) {
             System.out.println(customer);
         }
+    }
+
+    private void buildingActions(){
+        buildingRepo.deleteAll();
+
+        Location location1 = new Location("test desc1");
+        Location location2 = new Location("test desc2");
+        Building building1 = new Building(11);
+        Building building2 = new Building(22);
+        building1.setLocation(location1);
+        building2.setLocation(location2);
+
+        buildingRepo.save(building1);
+        buildingRepo.save(building2);
     }
 
 }
