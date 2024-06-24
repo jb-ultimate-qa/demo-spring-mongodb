@@ -1,5 +1,7 @@
 package my.dsm;
 
+import my.dsm.model.Order;
+import my.dsm.model.OrderRepository;
 import my.dsm.nested_doc.Building;
 import my.dsm.nested_doc.Location;
 import my.dsm.model.CustomerRepository;
@@ -13,7 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class DemoSpringMongoApplication implements CommandLineRunner {
 
-    @Autowired private CustomerRepository repository;
+    @Autowired private CustomerRepository customerRepo;
+    @Autowired private OrderRepository orderRepo;
     @Autowired private BuildingRepo buildingRepo;
 
     public static void main(String[] args) {
@@ -22,33 +25,40 @@ public class DemoSpringMongoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        buildingActions();
-        //customersActions();
+        //buildingActions();
+        customersActions();
     }
 
     private void customersActions() {
-        repository.deleteAll();
+        customerRepo.deleteAll();
 
         // save a couple of customers
-        repository.save(new Customer("Alice", "Smith"));
-        repository.save(new Customer("Bob", "Smith"));
-        repository.save(new Customer("Eve", "Roy"));
+        Customer firstCustomer = new Customer("Alice", "Smith");
+        customerRepo.save(firstCustomer);
+        customerRepo.save(new Customer("Bob", "Smith"));
+        customerRepo.save(new Customer("Eve", "Roy"));
+
+        orderRepo.deleteAll();
+        Order order = new Order();
+        order.setDescription("test order");
+        order.setOwner(firstCustomer);
+        orderRepo.save(order);
 
         // fetch all customers
         System.out.println("\n  Customers found with findAll():");
         System.out.println("-------------------------------");
-        for (Customer customer : repository.findAll()) {
+        for (Customer customer : customerRepo.findAll()) {
             System.out.println(customer);
         }
 
         // fetch an individual customer
         System.out.println("\n  Customer found with findByFirstName('Alice'):");
         System.out.println("--------------------------------");
-        System.out.println(repository.findByFirstName("Alice"));
+        System.out.println(customerRepo.findByFirstName("Alice"));
 
         System.out.println("\n  Customers found with findByLastName('Smith'):");
         System.out.println("--------------------------------");
-        for (Customer customer : repository.findByLastName("Smith")) {
+        for (Customer customer : customerRepo.findByLastName("Smith")) {
             System.out.println(customer);
         }
     }
