@@ -1,0 +1,17 @@
+services:
+  mongodb:
+    image: mongo:8.0
+    container_name: demo-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_DATABASE: demo-docker
+    ports:
+      - "27117:27017"
+    volumes:
+      - ./src/main/resources/01-init.js:/docker-entrypoint-initdb.d/01-init.js:ro
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
+  
